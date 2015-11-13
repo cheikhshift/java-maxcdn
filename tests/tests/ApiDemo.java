@@ -30,7 +30,7 @@ public class ApiDemo {
 			
 			
 			try {
-				MaxCDNObject post_example = api.post("", new MaxCDNRequest());
+				MaxCDNObject post_example = api.post("/zones/push.json", new MaxCDNRequest("name", "NewZone91").append("password", "password"));
 				if(post_example.error){
 					Console.log(post_example.getErrorMessage());
 					return;
