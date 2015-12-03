@@ -48,8 +48,15 @@ public class MaxCDN {
 	public MaxCDNObject put(String endpoint, MaxCDNRequest request){
 		return this.request(endpoint, Verb.PUT, request);
 	}
+	
+	public MaxCDNObject put(String endpoint){
+		return this.request(endpoint, Verb.PUT, null);
+	}
 	public MaxCDNObject post(String endpoint, MaxCDNRequest request){
 		return this.request(endpoint, Verb.POST, request);
+	}
+	public MaxCDNObject post(String endpoint){
+		return this.request(endpoint, Verb.POST, null);
 	}
 	
 	public Token getRequestToken(){
@@ -126,7 +133,7 @@ public class MaxCDN {
 		 
 		OAuthRequest request = new OAuthRequest(verb, this.MaxCDNrws_url + alias + end);
 		request.addHeader("User-Agent", "Java MaxCDN API Client");
-		if(verb == Verb.PUT || verb == Verb.POST){
+		if(body != null){
 			for(int i = 0;i < body.names().length(); i++){
 				String key = (String) body.names().get(i);
 				request.addBodyParameter(key, body.getString(key));

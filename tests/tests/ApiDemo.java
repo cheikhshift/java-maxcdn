@@ -2,12 +2,11 @@ package tests;
 
 
 
-import org.json.JSONException;
+
 
 import com.maxcdn.Console;
 import com.maxcdn.MaxCDN;
 import com.maxcdn.MaxCDNObject;
-import com.maxcdn.MaxCDNRequest;
 
 public class ApiDemo {
 
@@ -19,27 +18,15 @@ public class ApiDemo {
 				"");	// Cons. Secret
 		
 		    //Console.log(api.getAuthUrl(api.getRequestToken()));
-			
-	
-			MaxCDNObject data = api.get("/account.json");
+			String id = "33706";
+			MaxCDNObject data = api.delete("/users.json/"+id);
 			if(!data.error)
 			Console.log(data);
 			else {
 				Console.log("Error " + data.getErrorMessage());
 			}
 			
-			
-			try {
-				MaxCDNObject post_example = api.post("", new MaxCDNRequest());
-				if(post_example.error){
-					Console.log(post_example.getErrorMessage());
-					return;
-				}
-				Console.log(post_example);
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	
 			
 		
 	}
