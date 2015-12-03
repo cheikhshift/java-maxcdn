@@ -76,10 +76,7 @@ public class MaxCDN {
 		   .apiSecret(secret)
 		   .build();
 		
-	   
-	  //  Token requestToken = service.getRequestToken();
-	  
-	    System.out.println(service.getAuthorizationUrl(requestToken));
+	
 	    return service.getAuthorizationUrl(requestToken);
 	}
 	

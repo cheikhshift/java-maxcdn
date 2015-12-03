@@ -71,7 +71,6 @@ This section describes how to perform PUT and POST requests.
 		api.post("/zones/push.json", post_parameters);
 		
 	} catch (JSONException e) {
-		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
 

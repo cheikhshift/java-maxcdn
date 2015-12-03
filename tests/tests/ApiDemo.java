@@ -26,7 +26,22 @@ public class ApiDemo {
 				Console.log("Error " + data.getErrorMessage());
 			}
 			
+<<<<<<< HEAD
 	
+=======
+			
+			try {
+				MaxCDNObject post_example = api.post("/zones/push.json", new MaxCDNRequest("name", "NewZone91").append("password", "password"));
+				if(post_example.error){
+					Console.log(post_example.getErrorMessage());
+					return;
+				}
+				Console.log(post_example);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+>>>>>>> origin/master
 			
 		
 	}
