@@ -53,15 +53,17 @@ public class MaxCDNObject extends JSONObject {
 	}
 	
 	public Number getNumber(String key){
-			return (Number) this.get(key);	
+		try {
+			return (Number) this.get(key);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
 	}
 	public String getString(String key){
-			return (String) this.get(key);	
-	}
-	
-	public Object get(String key){
 		try {
-			return  super.get(key);
+			return (String) this.get(key);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
