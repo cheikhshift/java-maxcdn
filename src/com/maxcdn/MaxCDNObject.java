@@ -14,7 +14,7 @@ public class MaxCDNObject extends JSONObject {
 		//code = this.getInt("code");
 	}
 	public MaxCDNObject(String json) throws JSONException{
-		super(new JSONObject(json).has("data") ? ((JSONObject) new JSONObject(json).get("data")).toString() : json );
+		super(json);
 		code = new JSONObject(json).getInt("code");	
 		if(this.has("error")) error = true;
 	}
@@ -53,17 +53,15 @@ public class MaxCDNObject extends JSONObject {
 	}
 	
 	public Number getNumber(String key){
-		try {
-			return (Number) this.get(key);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
+			return (Number) this.get(key);	
 	}
 	public String getString(String key){
+			return (String) this.get(key);	
+	}
+	
+	public Object get(String key){
 		try {
-			return (String) this.get(key);
+			return  super.get(key);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

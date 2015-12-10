@@ -2,6 +2,7 @@ package com.maxcdn;
 
 import java.security.SignatureException;
 
+import org.json.JSONException;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -9,6 +10,7 @@ import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
+import org.scribe.utils.OAuthEncoder;
 
 
 public class MaxCDN {
@@ -17,7 +19,20 @@ public class MaxCDN {
 	public String key;
 	public String secret;
 	private Token token_stored;
+	public String callback_url = "oob";
 	public String MaxCDNrws_url = "https://rws.maxcdn.com/";
+	
+	public static MaxCDNRequest newRequest(String key,Object value){
+		
+		try {
+			return new MaxCDNRequest(key,value);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+			return null;
+		}
+		
+	}
 	
 	public MaxCDN(String alias, String consumer_key, String consumer_secret){
 		this.alias = alias;
@@ -45,11 +60,21 @@ public class MaxCDN {
 	public MaxCDNObject delete(String endpoint){
 		return this.request(endpoint, Verb.DELETE, null);
 	}
+	public MaxCDNObject delete(String endpoint, MaxCDNRequest request){
+		return this.request(endpoint, Verb.DELETE, request);
+	}
 	public MaxCDNObject put(String endpoint, MaxCDNRequest request){
 		return this.request(endpoint, Verb.PUT, request);
 	}
+	
+	public MaxCDNObject put(String endpoint){
+		return this.request(endpoint, Verb.PUT, null);
+	}
 	public MaxCDNObject post(String endpoint, MaxCDNRequest request){
 		return this.request(endpoint, Verb.POST, request);
+	}
+	public MaxCDNObject post(String endpoint){
+		return this.request(endpoint, Verb.POST, null);
 	}
 	
 	public Token getRequestToken(){
@@ -66,14 +91,12 @@ public class MaxCDN {
 		OAuthService service = new ServiceBuilder()
 		   .provider(MaxCDNApi.class)
 		   .apiKey(key)
-		   .apiSecret(secret)
-		   .build();
-		
+		   .apiSecret(secret).build();
 	   
 	  //  Token requestToken = service.getRequestToken();
 	  
 	    System.out.println(service.getAuthorizationUrl(requestToken));
-	    return service.getAuthorizationUrl(requestToken);
+	    return service.getAuthorizationUrl(requestToken) + "&oauth_callback=" + OAuthEncoder.encode(callback_url);
 	}
 	
 	public Token getAccessToken(Token requestToken, String verify){
@@ -125,18 +148,37 @@ public class MaxCDN {
 		   .build();
 		 
 		OAuthRequest request = new OAuthRequest(verb, this.MaxCDNrws_url + alias + end);
-		request.addHeader("User-Agent", "Java MaxCDN API Client");
-		if(verb == Verb.PUT || verb == Verb.POST){
+		/*
+		 * Missing headers caused invalid signature,
+		 * Add custom header settings
+		 * prior to signing the request
+		 */
+		String post_req = "";
+		if(body != null){
 			for(int i = 0;i < body.names().length(); i++){
 				String key = (String) body.names().get(i);
-				request.addBodyParameter(key, body.getString(key));
+				if(verb == Verb.POST){
+					request.addBodyParameter(key, body.getString(key));
+				}
+				else if(verb != Verb.PUT  )
+				request.addQuerystringParameter(key, body.getString(key));
+				else {
+					post_req += key + "=" + body.getString(key) + "&";
+				}
 			}
 		}
+		if(verb == Verb.PUT)
+		request.addPayload(removeLastChar(post_req));
+		request.addHeader("User-Agent", "Java MaxCDN API Client"); 
+		
 		service.signRequest((token == null) ? new Token("","") : token, request);
-		 
+		//Console.log(request.headers); 
 		Response response = request.send();
-		//Console.log(response.getBody());
-
+		
+		//Console.log(response.getHeaders());
 	    return response.getBody();
 	}
+	  private static String removeLastChar(String str) {
+	        return str.substring(0,str.length()-1);
+	   }
 }
