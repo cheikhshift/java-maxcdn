@@ -166,9 +166,10 @@ public class MaxCDN {
 					post_req += key + "=" + body.getString(key) + "&";
 				}
 			}
+			if(verb == Verb.PUT )
+	        	request.addPayload(removeLastChar(post_req));
 		}
-		if(verb == Verb.PUT)
-		request.addPayload(removeLastChar(post_req));
+	
 		request.addHeader("User-Agent", "Java MaxCDN API Client"); 
 		
 		service.signRequest((token == null) ? new Token("","") : token, request);
